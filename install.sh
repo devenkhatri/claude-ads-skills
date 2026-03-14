@@ -7,7 +7,7 @@ set -euo pipefail
 main() {
     SKILL_DIR="${HOME}/.claude/skills/ads"
     AGENT_DIR="${HOME}/.claude/agents"
-    REPO_URL="https://github.com/AgriciDaniel/claude-ads"
+    REPO_URL="https://github.com/devenkhatri/claude-ads-skills"
 
     echo "════════════════════════════════════════"
     echo "║   Claude Ads - Installer             ║"
@@ -28,16 +28,16 @@ main() {
     trap "rm -rf ${TEMP_DIR}" EXIT
 
     echo "↓ Downloading Claude Ads..."
-    git clone --depth 1 "${REPO_URL}" "${TEMP_DIR}/claude-ads" 2>/dev/null
+    git clone --depth 1 "${REPO_URL}" "${TEMP_DIR}/claude-ads-skills" 2>/dev/null
 
     # Copy main skill + references
     echo "→ Installing skill files..."
-    cp "${TEMP_DIR}/claude-ads/ads/SKILL.md" "${SKILL_DIR}/SKILL.md"
-    cp "${TEMP_DIR}/claude-ads/ads/references/"*.md "${SKILL_DIR}/references/"
+    cp "${TEMP_DIR}/claude-ads-skills/ads/SKILL.md" "${SKILL_DIR}/SKILL.md"
+    cp "${TEMP_DIR}/claude-ads-skills/ads/references/"*.md "${SKILL_DIR}/references/"
 
     # Copy sub-skills
     echo "→ Installing sub-skills..."
-    for skill_dir in "${TEMP_DIR}/claude-ads/skills"/*/; do
+    for skill_dir in "${TEMP_DIR}/claude-ads-skills/skills"/*/; do
         skill_name=$(basename "${skill_dir}")
         target="${HOME}/.claude/skills/${skill_name}"
         mkdir -p "${target}"
@@ -52,15 +52,15 @@ main() {
 
     # Copy agents
     echo "→ Installing subagents..."
-    cp "${TEMP_DIR}/claude-ads/agents/"*.md "${AGENT_DIR}/" 2>/dev/null || true
+    cp "${TEMP_DIR}/claude-ads-skills/agents/"*.md "${AGENT_DIR}/" 2>/dev/null || true
 
     # Copy scripts (optional Python tools)
     SCRIPTS_DIR="${HOME}/.claude/skills/ads/scripts"
-    if [ -d "${TEMP_DIR}/claude-ads/scripts" ]; then
+    if [ -d "${TEMP_DIR}/claude-ads-skills/scripts" ]; then
         echo "→ Installing Python scripts..."
         mkdir -p "${SCRIPTS_DIR}"
-        cp "${TEMP_DIR}/claude-ads/scripts/"*.py "${SCRIPTS_DIR}/"
-        cp "${TEMP_DIR}/claude-ads/requirements.txt" "${SKILL_DIR}/requirements.txt"
+        cp "${TEMP_DIR}/claude-ads-skills/scripts/"*.py "${SCRIPTS_DIR}/"
+        cp "${TEMP_DIR}/claude-ads-skills/requirements.txt" "${SKILL_DIR}/requirements.txt"
     fi
 
     # Install Python dependencies (required for /ads generate, /ads dna screenshots)
